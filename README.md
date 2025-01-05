@@ -1,0 +1,2 @@
+# MuMu_CPUAfiinity
+sdf

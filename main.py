@@ -2,7 +2,7 @@
 MuMu App Player Affinity Changer for 7950x3d
 '''
 
-import subprocess
+import subprocess, threading, sys, io, time
 
 def count_process(name):
     command = f"""
@@ -33,9 +33,29 @@ def set_affinity(name, count, ccd):
         text=True
     )
 
+def input_with_timeout(prompt, timeout, default=0):
+    user_input = ""
+
+    def _input():
+        nonlocal user_input
+        user_input = input(prompt)
+
+    thread = threading.Thread(target=_input, daemon=True)
+    thread.start()
+    thread.join(timeout)
+
+    if thread.is_alive():
+        # sys.stdin = io.StringIO('')
+        print()
+        print()
+        print("Timeout!")
+        return default
+
+    return user_input
+
 
 process_name_list = ["MuMuPlayer", "MuMuVMMHeadless"]
-ccd_chosen = -1
+ccd_chosen = input_with_timeout("Choose CCD (0 for CCD0, 1 for CCD1, 2 for all) : ", 3)
 
 for process_name in process_name_list:
     print(f"Working for {process_name}")
@@ -44,8 +64,8 @@ for process_name in process_name_list:
     if process_count == 0:
         print("Error!")
     elif process_count > 0:
-        ccd_chosen = int(input("0 for CCD0, 1 for CCD1, 2 for all : ")) if ccd_chosen == -1 else ccd_chosen
         set_affinity(process_name, process_count, ccd_chosen)
         print(f"Setting to ccd{ccd_chosen} Completed for {process_count} Instance(s).")
 
-input("")
+time.sleep(1)
+sys.exit()

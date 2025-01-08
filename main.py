@@ -2,21 +2,38 @@
 MuMu App Player Affinity Changer for 7950x3d
 '''
 
-import subprocess, threading, sys, io, time
+import subprocess, threading, sys, time
 
 def count_process(name):
-    command = f"""
-    $process = Get-Process {name}
-    $process.Length
-    """
+    # PowerShell 명령어에서 안전하게 인자를 전달
+    command = [
+        "powershell",
+        "-Command",
+        f"""
+        try {{
+            $process = Get-Process -Name '{name}' -ErrorAction Stop
+            $process.Length
+        }} catch {{
+            0  # 프로세스가 없으면 0 반환
+        }}
+        """
+    ]
 
     returned = subprocess.run(
-        ["powershell", "-Command", command],
+        command,
         capture_output=True,
         text=True
     )
 
-    return int(returned.stdout)
+    # 명령어의 실행 성공 여부 확인
+    if returned.returncode != 0:
+        raise RuntimeError(f"PowerShell command failed: {returned.stderr}")
+
+    try:
+        # 결과를 정수로 변환
+        return int(returned.stdout.strip())
+    except ValueError:
+        raise RuntimeError(f"Invalid output from PowerShell command: {returned.stdout}")
 
 def set_affinity(name, count, ccd):
     #             2^16-1, 2^32-2^16, 2^32-1
@@ -33,8 +50,8 @@ def set_affinity(name, count, ccd):
         text=True
     )
 
-def input_with_timeout(prompt, timeout, default=0):
-    user_input = ""
+def input_with_timeout(prompt, timeout, default=None):
+    user_input = default
 
     def _input():
         nonlocal user_input
@@ -45,27 +62,27 @@ def input_with_timeout(prompt, timeout, default=0):
     thread.join(timeout)
 
     if thread.is_alive():
-        # sys.stdin = io.StringIO('')
-        print()
-        print()
-        print("Timeout!")
-        return default
-
+        print(user_input)
+        print("Timeout! Automatically set to default.")
     return user_input
 
 
 process_name_list = ["MuMuPlayer", "MuMuVMMHeadless"]
-ccd_chosen = input_with_timeout("Choose CCD (0 for CCD0, 1 for CCD1, 2 for all) : ", 3)
+ccd_chosen = int(input_with_timeout("Choose CCD (0 for CCD0, 1 for CCD1, 2 for all) : ", 3, 0))
 
 for process_name in process_name_list:
-    print(f"Working for {process_name}")
+    print(f"\nWorking for {process_name}")
     process_count = count_process(process_name)
 
     if process_count == 0:
-        print("Error!")
+        print("No Such Process Found! Trying Next Process.")
     elif process_count > 0:
         set_affinity(process_name, process_count, ccd_chosen)
         print(f"Setting to ccd{ccd_chosen} Completed for {process_count} Instance(s).")
 
-time.sleep(1)
+a = input("\nhi?: ")
+print(a)
+
+print("\nAll Process Completed! Terminal will close in 2 seconds.")
+time.sleep(2)
 sys.exit()

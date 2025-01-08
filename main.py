@@ -3,6 +3,8 @@ MuMu App Player Affinity Changer for 7950x3d
 '''
 
 import subprocess, threading, sys, time
+import _thread
+import ctypes
 
 def count_process(name):
     # PowerShell 명령어에서 안전하게 인자를 전달
@@ -57,11 +59,16 @@ def input_with_timeout(prompt, timeout, default=None):
         nonlocal user_input
         user_input = input(prompt)
 
+    def ctype_async_raise(thread_obj, exception):
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_ulong(thread_obj.ident), ctypes.py_object(exception))
+    
     thread = threading.Thread(target=_input, daemon=True)
     thread.start()
+
     thread.join(timeout)
 
     if thread.is_alive():
+        ctype_async_raise(thread, SystemExit)
         print(default)
         print("Timeout! Automatically set to default.")
     return user_input
@@ -87,8 +94,8 @@ multiprocessing은 생성한 프로세스에서 input 못 받음.
 
 '''
 
-a = input("\nhi?: ")
-print(f"at the end : {a}")
+# a = input("\nhi?: ")
+# print(f"at the end : {a}")
 
 print("\nAll Process Completed! Terminal will close in 2 seconds.")
 time.sleep(2)

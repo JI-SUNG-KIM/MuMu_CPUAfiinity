@@ -62,7 +62,7 @@ def input_with_timeout(prompt, timeout, default=None):
     thread.join(timeout)
 
     if thread.is_alive():
-        print(user_input)
+        print(default)
         print("Timeout! Automatically set to default.")
     return user_input
 
@@ -81,7 +81,7 @@ for process_name in process_name_list:
         print(f"Setting to ccd{ccd_chosen} Completed for {process_count} Instance(s).")
 
 a = input("\nhi?: ")
-print(a)
+print(f"at the end : {a}")
 
 print("\nAll Process Completed! Terminal will close in 2 seconds.")
 time.sleep(2)

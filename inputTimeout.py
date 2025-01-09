@@ -5,7 +5,6 @@ if not os.path.exists("input_script.py"):
     command = "import sys\n\nuser_input = input("")  # 입력값 받기\nprint(user_input, file=sys.stderr, end='')"
     with open("input_script.py", "w", encoding="utf-8") as f:
         f.writelines(command)
-        f.close()
 
 def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_alert = True):
     """
@@ -44,13 +43,11 @@ def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_ale
         # print("Output from subprocess' stdout:", stdout_data.strip())
         # print("Output from subprocess' stderr:", stderr_data.strip())
 
-
     except subprocess.TimeoutExpired:
         user_input = default
         print(user_input)
         if timeout_alert:
             print("\nTimeout occurred. Default value chosen.")
         user_input_process.terminate()
-
 
     return user_input

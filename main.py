@@ -47,7 +47,7 @@ for process_name in process_name_list:
         print("No Such Process Found! Trying Next Process.")
     elif process_count > 0:
         set_affinity(process_name, process_count, ccd_chosen)
-        print(f"Setting to ccd{ccd_chosen} Completed for {process_count} Instance(s).")
+        print(f"Setting to {'all ' if ccd_chosen == 2 else ''}ccd{ccd_chosen if ccd_chosen != 2 else 's'} Completed for {process_count} Instance(s).")
 
 # a = input("\nhi?: ")
 # print(f"at the end : {a}")

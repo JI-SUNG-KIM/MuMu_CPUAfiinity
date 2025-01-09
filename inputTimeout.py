@@ -49,7 +49,7 @@ def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_ale
         user_input = default
         print(user_input)
         if timeout_alert:
-            print("\nTimeout occurred.")
+            print("\nTimeout occurred. Default value chosen.")
         user_input_process.terminate()
 
 

@@ -37,7 +37,7 @@ def set_affinity(name, count, ccd):
 
 
 process_name_list = ["MuMuPlayer", "MuMuVMMHeadless"]
-ccd_chosen = int(it.input_with_timeout("Choose CCD (0 for CCD0, 1 for CCD1, 2 for all) : ", 3, True, 0))
+ccd_chosen = int(it.input_with_timeout("Choose CCD (0 for CCD0, 1 for CCD1, 2 for all) : ", 3, 0, True))
 
 for process_name in process_name_list:
     print(f"\nWorking for {process_name}")
@@ -48,13 +48,6 @@ for process_name in process_name_list:
     elif process_count > 0:
         set_affinity(process_name, process_count, ccd_chosen)
         print(f"Setting to ccd{ccd_chosen} Completed for {process_count} Instance(s).")
-
-'''
-thread에서 돌고 있는 input이 종료되지 않아서 다음 input이 있으면 thread input이 먼저 입력받고 그다음 여기 input이 입력됨.
-multiprocessing은 생성한 프로세스에서 input 못 받음.
-키보드 입력 구현은 포커스가 다른 창으로 넘어가면 문제 발생
-
-'''
 
 # a = input("\nhi?: ")
 # print(f"at the end : {a}")

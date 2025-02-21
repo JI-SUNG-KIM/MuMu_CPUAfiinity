@@ -36,7 +36,7 @@ def set_affinity(name, count, ccd):
 
 
 
-process_name_list = ["MuMuPlayer", "MuMuVMMHeadless"]
+process_name_list = ["MuMuPlayer", "MuMuVMMHeadless", 'MuMuVMMSVC']
 ccd_chosen = int(it.input_with_timeout("Choose CCD (0 for CCD0, 1 for CCD1, 2 for all) : ", 3, 0, True))
 
 for process_name in process_name_list:

@@ -2,9 +2,14 @@ import subprocess, os
 
 # input_script.py 없으면 생성
 if not os.path.exists("input_script.py"):
-    command = "import sys\n\nuser_input = input("")  # 입력값 받기\nprint(user_input, file=sys.stderr, end='')"
-    with open("input_script.py", "w", encoding="utf-8") as f:
-        f.writelines(command)
+    # input_script.py 생성할 건지 물어보고 y면 생성, 아니면 종료
+    ans = input(f"There's no input_script.py file in {os.path.realpath(__file__)}.\nDo you want to make it?(y/n(terminate)) : ")
+    if ans.lower() == 'y':
+        command = "import sys\n\nuser_input = input("")  # 입력값 받기\nprint(user_input, file=sys.stderr, end='')"
+        with open("input_script.py", "w", encoding="utf-8") as f:
+            f.writelines(command)
+    else:
+        os._exit(0)
 
 def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_alert = True):
     """

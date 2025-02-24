@@ -1,8 +1,7 @@
 '''
 MuMu App Player Affinity Changer for 7950x3d
 '''
-
-import subprocess, threading, sys, time
+import subprocess, sys, time
 import inputTimeout as it
 
 def set_affinity(name, ccd):

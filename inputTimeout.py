@@ -1,7 +1,7 @@
 import subprocess, os
 
 # input_script.py 없으면 생성
-if not os.path.exists("input_script.py"):
+if not os.path.exists(os.path.realpath(__file__)):
     # input_script.py 생성할 건지 물어보고 y면 생성, 아니면 종료
     ans = input(f"There's no input_script.py file in {os.path.realpath(__file__)}.\nDo you want to make it?(y/n(terminate)) : ")
     if ans.lower() == 'y':
@@ -11,7 +11,7 @@ if not os.path.exists("input_script.py"):
     else:
         os._exit(0)
 
-def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_alert = True):
+def input_with_timeout(prompt : str, timeoutsec : int, default_value=None, timeout_alert = True):
     """
     Reads input from the user with a specified timeout. If the timeout is exceeded,
     a default value is returned, and an optional alert can be displayed.
@@ -21,15 +21,15 @@ def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_ale
     :type prompt: str
     :param timeoutsec: The number of seconds before input times out.
     :type timeoutsec: int
-    :param default: The default value returned if a timeout occurs.
-    :type default: Any
+    :param default_value: The default value returned if a timeout occurs.
+    :type default_value: Any
     :param timeout_alert: If True, a timeout alert message is printed.
     :type timeout_alert: bool
     :return: The user input if provided within the timeout period, or the default value.
     :rtype: Any
     """
     print(prompt, end='', flush=True)
-    user_input = default
+    user_input = default_value
 
     user_input_process = subprocess.Popen(
         ["python", "input_script.py"],  # 실행할 하위 스크립트 명령
@@ -49,10 +49,15 @@ def input_with_timeout(prompt : str, timeoutsec : int, default=None, timeout_ale
         # print("Output from subprocess' stderr:", stderr_data.strip())
 
     except subprocess.TimeoutExpired:
-        user_input = default
+        user_input = default_value
         print(user_input)
         if timeout_alert:
             print("\nTimeout occurred. Default value chosen.")
         user_input_process.terminate()
 
     return user_input
+
+if __name__ == "__main__":
+    msg = input("Enter a message : ")
+    time = int(input("Enter a time : "))
+    print("returned :", input_with_timeout(msg, time, "0", True))

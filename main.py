@@ -26,4 +26,4 @@ for process_name in process_name_list:
 
 print("\nAll Process Completed! Terminal will close in 2 seconds.")
 time.sleep(2)
-sys.exit(1)
+sys.exit(0)
